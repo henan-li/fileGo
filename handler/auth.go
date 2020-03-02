@@ -8,6 +8,7 @@ import (
 func HTTPInterceptor(h http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
+			// 添加拦截验证处理
 			r.ParseForm()
 			username := r.Form.Get("username")
 			token := r.Form.Get("token")
@@ -19,6 +20,7 @@ func HTTPInterceptor(h http.HandlerFunc) http.HandlerFunc {
 				http.Redirect(w, r, "/static/view/signin.html", http.StatusFound)
 				return
 			}
+			// 功能函数正常执行
 			h(w, r)
 		})
 }

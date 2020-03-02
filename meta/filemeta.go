@@ -1,11 +1,11 @@
 package meta
 
 import (
-	mydb "workplace/fileGo/db"
 	"sort"
+	mydb "workplace/fileGo/db"
 )
 
-// FileMeta : 文件元信息结构
+// FileMeta : 上传文件元信息结构
 type FileMeta struct {
 	FileSha1 string
 	FileName string

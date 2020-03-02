@@ -44,12 +44,14 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		defer file.Close()
 
+		// 记录文件信息
 		fileMeta := meta.FileMeta{
 			FileName: head.Filename,
 			Location: "/tmp/" + head.Filename,
 			UploadAt: time.Now().Format("2006-01-02 15:04:05"),
 		}
 
+		// 在目标路径创建文件
 		newFile, err := os.Create(fileMeta.Location)
 		if err != nil {
 			fmt.Printf("Failed to create file, err:%s\n", err.Error())
@@ -57,17 +59,15 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		defer newFile.Close()
 
+		// 将临时文件持久化
 		fileMeta.FileSize, err = io.Copy(newFile, file)
 		if err != nil {
 			fmt.Printf("Failed to save data into file, err:%s\n", err.Error())
 			return
 		}
-
+		// 设置游标offset
 		newFile.Seek(0, 0)
 		fileMeta.FileSha1 = util.FileSha1(newFile)
-
-		// 游标重新回到文件头部
-		newFile.Seek(0, 0)
 
 		if cfg.CurrentStoreType == cmn.StoreCeph {
 			// 文件写入Ceph存储
